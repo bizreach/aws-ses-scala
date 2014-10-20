@@ -7,7 +7,7 @@ version := "0.0.1"
 scalaVersion := "2.11.2"
 
 libraryDependencies ++= Seq(
-  "com.amazonaws" % "aws-java-sdk" % "1.8.10.2"
+  "com.amazonaws" % "aws-java-sdk" % "1.9.1"
 )
 
 scalacOptions := Seq("-deprecation")
