@@ -1,5 +1,7 @@
 package jp.co.bizreach.ses
 
+import java.util.concurrent.ExecutorService
+
 import scala.concurrent.Future
 
 import com.amazonaws._
@@ -9,7 +11,9 @@ import regions._
 import services.simpleemail._
 import model._
 
-trait SES { self :AmazonSimpleEmailServiceAsyncClient =>
+
+trait SES { self: SESClient =>
+  import client._
 
   def sendEmail(request: SESRequest): Future[SendEmailResult] = wrapAsyncMethod {
     sendEmailAsync(
@@ -27,30 +31,52 @@ trait SES { self :AmazonSimpleEmailServiceAsyncClient =>
       new SendRawEmailRequest(
         new RawMessage(request.rawMessage)
       ).withSource(request.from)
-       .withDestinations(request.to)
+        .withDestinations(request.to)
       , _: AsyncHandler[SendRawEmailRequest, SendRawEmailResult]
     )
   }
 
 }
 
+
 object SESClient {
-  // TODO default value
-  def apply(credentials: AWSCredentials = new AnonymousAWSCredentials)(implicit region: Region): SESClient = {
-    val client = new SESClient(credentials)
-    client.setRegion(region)
-    client
+
+  def apply(accessKeyId: String, secretKeyId: String)(implicit region: Region): SESClient = {
+    apply(new BasicAWSCredentials(accessKeyId, secretKeyId))
   }
 
-  def apply(accessKeyId: String, secretAccessKey: String)(implicit region: Region): SESClient =
-    apply(new BasicAWSCredentials(accessKeyId, secretAccessKey))(region)
 
-  def at(region: Region): SESClient = apply()(region)
+  def apply(awsCredentials: AWSCredentials = new AnonymousAWSCredentials)(implicit region: Region): SESClient = {
+    val client = new AmazonSimpleEmailServiceAsyncClient(awsCredentials)
+    client.setRegion(region)
+    new SESClient(client)
+  }
+
+
+  def apply(awsCredentials: AWSCredentials, executorService: ExecutorService)(implicit region: Region): SESClient = {
+    val client = new AmazonSimpleEmailServiceAsyncClient(awsCredentials, executorService)
+    client.setRegion(region)
+    new SESClient(client)
+  }
+
+
+  def apply(awsCredentialsProvider: AWSCredentialsProvider)(implicit region: Region): SESClient = {
+    val client = new AmazonSimpleEmailServiceAsyncClient(awsCredentialsProvider)
+    client.setRegion(region)
+    new SESClient(client)
+  }
+
+
+  def apply(awsCredentialsProvider: AWSCredentialsProvider, executorService: ExecutorService)
+           (implicit region: Region): SESClient = {
+    val client = new AmazonSimpleEmailServiceAsyncClient(awsCredentialsProvider, executorService)
+    client.setRegion(region)
+    new SESClient(client)
+  }
+
 }
 
-/**
- * Amazon SES asynchronous client.
- */
-class SESClient private (credentials: AWSCredentials)
-  extends AmazonSimpleEmailServiceAsyncClient(credentials)
-  with SES
+
+
+class SESClient private (val client: AmazonSimpleEmailServiceAsync) extends SES
+
