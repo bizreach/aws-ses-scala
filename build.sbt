@@ -2,9 +2,9 @@ name := "aws-ses-scala"
 
 organization := "jp.co.bizreach"
 
-version := "0.0.1"
+version := "0.0.1-SNAPSHOT"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.5"
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-ses" % "1.9.14",
@@ -27,3 +27,4 @@ javacOptions in compile ++= Seq(
   "-encoding", "UTF-8",
   "-target", "1.7"
 )
+
