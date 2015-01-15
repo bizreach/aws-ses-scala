@@ -14,35 +14,34 @@ import com.amazonaws.services.simpleemail.model._
 
 
 trait SES { self: SESClient =>
-  import client._
+  import aws._
 
 
   def buildRequest(email: models.Email): SendEmailRequest = {
+    val destination = new Destination()
+    if(email.to.nonEmpty) destination.setToAddresses(email.to.map(_.encoded).asJavaCollection)
+    if(email.cc.nonEmpty) destination.setCcAddresses(email.cc.map(_.encoded).asJavaCollection)
+    if(email.bcc.nonEmpty) destination.setBccAddresses(email.bcc.map(_.encoded).asJavaCollection)
+
     val subject = new Content(email.subject.data).withCharset(email.subject.charset)
 
     val body = new Body()
     email.bodyHtml.foreach { bodyHtml =>
-      val htmlContent = new Content()
+      val htmlContent = new Content(bodyHtml.data)
       htmlContent.setCharset(bodyHtml.charset)
-      htmlContent.setData(bodyHtml.data)
       body.setHtml(htmlContent)
     }
-
     email.bodyText.foreach { bodyText =>
-      val textContent = new Content()
+      val textContent = new Content(bodyText.data)
       textContent.setCharset(bodyText.charset)
-      textContent.setData(bodyText.data)
       body.setText(textContent)
     }
+
     val message = new Message(subject, body)
 
-    val destination = new Destination()
-      .withToAddresses(email.to.map(_.encoded).asJavaCollection)
-      .withCcAddresses(email.cc.map(_.encoded).asJavaCollection)
-      .withBccAddresses(email.bcc.map(_.encoded).asJavaCollection)
-
     val req = new SendEmailRequest(email.source.encoded, destination, message)
-    req.setReplyToAddresses(email.replyTo.map(_.encoded).asJavaCollection)
+    if(email.replyTo.nonEmpty) req.setReplyToAddresses(email.replyTo.map(_.encoded).asJavaCollection)
+
     email.returnPath.map { returnPath =>
       req.setReturnPath(returnPath)
     }
@@ -53,29 +52,6 @@ trait SES { self: SESClient =>
 
   def send(email: models.Email): Future[SendEmailResult] = wrapAsyncMethod {
     sendEmailAsync(buildRequest(email), _: AsyncHandler[SendEmailRequest, SendEmailResult])
-  }
-
-
-  def sendEmail(request: SESRequest): Future[SendEmailResult] = wrapAsyncMethod {
-    sendEmailAsync(
-      new SendEmailRequest(
-        request.from,
-        new Destination().withToAddresses(request.to),
-        new Message(new Content(request.subject), new Body(new Content(request.body)))
-      ), _: AsyncHandler[SendEmailRequest, SendEmailResult]
-    )
-  }
-
-
-  // TODO Wonder if this glad?
-  def sendRawEmail(request: SESRawRequest): Future[SendRawEmailResult] = wrapAsyncMethod {
-    sendRawEmailAsync(
-      new SendRawEmailRequest(
-        new RawMessage(request.rawMessage)
-      ).withSource(request.from)
-        .withDestinations(request.to)
-      , _: AsyncHandler[SendRawEmailRequest, SendRawEmailResult]
-    )
   }
 
 }
@@ -119,5 +95,5 @@ object SESClient {
 }
 
 
-class SESClient private (val client: AmazonSimpleEmailServiceAsync) extends SES
+class SESClient private (val aws: AmazonSimpleEmailServiceAsync) extends SES
 
