@@ -8,6 +8,7 @@ scalaVersion := "2.11.4"
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-ses" % "1.9.14",
+  "com.sun.mail"  % "javax.mail"       % "1.5.2",
   "org.scalatest" % "scalatest_2.11"   % "2.2.1"   % "test"
 )
 
