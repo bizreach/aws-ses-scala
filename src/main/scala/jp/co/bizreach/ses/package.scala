@@ -16,7 +16,7 @@ package object ses {
    */
   private[ses] def wrapAsyncMethod[Request <: AmazonWebServiceRequest, Result](
       execute: AsyncHandler[Request, Result] => JFuture[Result]): Future[Result] = {
-    val p = Promise[Result]
+    val p = Promise[Result]()
     execute {
       new AsyncHandler[Request, Result] {
         def onError(exception: Exception): Unit = p.failure(exception)
