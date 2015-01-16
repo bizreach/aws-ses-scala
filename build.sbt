@@ -28,3 +28,41 @@ javacOptions in compile ++= Seq(
   "-target", "1.7"
 )
 
+
+//
+// For publish artifact
+//
+
+publishMavenStyle := true
+
+publishTo <<= version { (v: String) =>
+  val nexus = "https://oss.sonatype.org/"
+  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else                             Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
+
+publishArtifact in Test := false
+
+pomIncludeRepository := { _ => false }
+
+pomExtra := (
+  <url>https://github.com/bizreach/aws-ses-scala</url>
+    <licenses>
+      <license>
+        <name>The Apache Software License, Version 2.0</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      </license>
+    </licenses>
+    <scm>
+      <url>https://github.com/bizreach/aws-ses-scala</url>
+      <connection>scm:git:https://github.com/bizreach/aws-ses-scala.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>tanacasino</id>
+        <name>Tomofumi Tanaka</name>
+        <email>tomofumi.tanaka_at_bizreach.co.jp</email>
+        <timezone>+9</timezone>
+      </developer>
+    </developers>)
+
