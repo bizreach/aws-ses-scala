@@ -95,5 +95,5 @@ object SESClient {
 }
 
 
-class SESClient private (val aws: AmazonSimpleEmailServiceAsync) extends SES
+class SESClient (val aws: AmazonSimpleEmailServiceAsync) extends SES
 
