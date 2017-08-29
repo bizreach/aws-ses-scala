@@ -33,6 +33,8 @@ case class Email(subject: Content,
                  cc: Seq[Address] = Seq.empty,
                  bcc: Seq[Address] = Seq.empty,
                  replyTo: Seq[Address] = Seq.empty,
-                 returnPath: Option[String] = None)
+                 returnPath: Option[String] = None,
+                 configurationSet: Option[String] = None,
+                 messageTags: Map[String, String] = Map.empty)
 
 

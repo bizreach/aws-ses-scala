@@ -42,6 +42,15 @@ trait SES { self: SESClient =>
     val req = new SendEmailRequest(email.source.encoded, destination, message)
     if(email.replyTo.nonEmpty) req.setReplyToAddresses(email.replyTo.map(_.encoded).asJavaCollection)
 
+    email.configurationSet.foreach { configurationSetName =>
+      req.setConfigurationSetName(configurationSetName)
+    }
+
+    val messageTags = email.messageTags.map { case (name, value) =>
+      new MessageTag().withName(name).withValue(value)
+    }
+    req.setTags(messageTags.asJavaCollection)
+
     email.returnPath.map { returnPath =>
       req.setReturnPath(returnPath)
     }
