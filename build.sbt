@@ -4,12 +4,13 @@ organization := "jp.co.bizreach"
 
 version := "0.0.2"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.12.3"
+crossScalaVersions := Seq("2.11.8", scalaVersion.value)
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-ses" % "1.11.184",
   "com.sun.mail"  % "javax.mail"       % "1.5.2",
-  "org.scalatest" % "scalatest_2.11"   % "2.2.1"   % "test"
+  "org.scalatest" %% "scalatest"       % "3.0.4" % "test"
 )
 
 scalacOptions ++= (
@@ -25,7 +26,7 @@ scalacOptions ++= (
 
 javacOptions in compile ++= Seq(
   "-encoding", "UTF-8",
-  "-target", "1.7"
+  "-target", "1.8"
 )
 
 
@@ -65,4 +66,3 @@ pomExtra := (
         <timezone>+9</timezone>
       </developer>
     </developers>)
-
