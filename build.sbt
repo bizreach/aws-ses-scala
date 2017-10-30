@@ -2,10 +2,10 @@ name := "aws-ses-scala"
 
 organization := "jp.co.bizreach"
 
-version := "0.0.2"
+version := "0.0.3-SNAPSHOT"
 
-scalaVersion := "2.12.3"
-crossScalaVersions := Seq("2.11.8", scalaVersion.value)
+scalaVersion := "2.12.4"
+crossScalaVersions := Seq("2.11.11", scalaVersion.value)
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-ses" % "1.11.184",
