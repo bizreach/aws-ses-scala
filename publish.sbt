@@ -16,7 +16,6 @@ developers := List(
   Developer(id="tanacasino", name="Tomofumi Tanaka", email="tomofumi.tanaka_at_bizreach.co.jp", url=url("https://github.com/tanacasino"))
 )
 
-sonatypeProfileName := organization.value
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 releaseTagName := (version in ThisBuild).value
 releaseCrossBuild := true
