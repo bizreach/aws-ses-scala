@@ -1,9 +1,5 @@
 name := "aws-ses-scala"
-
 organization := "jp.co.bizreach"
-
-version := "0.0.3-SNAPSHOT"
-
 scalaVersion := "2.12.5"
 crossScalaVersions := Seq("2.11.12", scalaVersion.value)
 
@@ -33,38 +29,43 @@ javacOptions in compile ++= Seq(
 //
 // For publish artifact
 //
-
-publishMavenStyle := true
-
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (version.value.trim.endsWith("SNAPSHOT"))
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
-
-publishArtifact in Test := false
+pomExtra := (
+  <scm>
+    <url>https://github.com/bizreach/aws-ses-scala</url>
+    <connection>scm:git:https://github.com/bizreach/aws-ses-scala.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>tanacasino</id>
+      <name>Tomofumi Tanaka</name>
+      <email>tomofumi.tanaka_at_bizreach.co.jp</email>
+      <timezone>+9</timezone>
+    </developer>
+  </developers>
+)
 
 pomIncludeRepository := { _ => false }
+publishMavenStyle := true
+publishTo := sonatypePublishTo.value
+homepage := Some(url(s"https://github.com/bizreach/aws-ses-scala"))
+licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html"))
 
-pomExtra := (
-  <url>https://github.com/bizreach/aws-ses-scala</url>
-    <licenses>
-      <license>
-        <name>The Apache Software License, Version 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      </license>
-    </licenses>
-    <scm>
-      <url>https://github.com/bizreach/aws-ses-scala</url>
-      <connection>scm:git:https://github.com/bizreach/aws-ses-scala.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>tanacasino</id>
-        <name>Tomofumi Tanaka</name>
-        <email>tomofumi.tanaka_at_bizreach.co.jp</email>
-        <timezone>+9</timezone>
-      </developer>
-    </developers>)
+sonatypeProfileName := organization.value
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+releaseTagName := (version in ThisBuild).value
+releaseCrossBuild := true
+
+import ReleaseTransformations._
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  publishArtifacts,
+  releaseStepCommand("sonatypeRelease"),
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
+)
