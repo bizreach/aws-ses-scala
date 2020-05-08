@@ -1,12 +1,12 @@
 name := "aws-ses-scala"
 organization := "jp.co.bizreach"
-scalaVersion := "2.12.5"
-crossScalaVersions := Seq("2.11.12", scalaVersion.value)
+scalaVersion := "2.13.2"
+crossScalaVersions := Seq("2.12.5", "2.11.12", scalaVersion.value)
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-ses" % "1.11.311",
   "com.sun.mail"  % "javax.mail"       % "1.5.2",
-  "org.scalatest" %% "scalatest"       % "3.0.5" % "test"
+  "org.scalatest" %% "scalatest"       % "3.1.0" % "test"
 )
 
 scalacOptions ++= (
